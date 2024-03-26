@@ -51,7 +51,7 @@
                                 <td>{{ $user->id }}</td>
                                 <td>
                                     @if(!empty( $user->image))
-                                    <img src="{{ asset('images/'.$user->image) }}" class="img-thumbnail" alt="" width="50">
+                                    <img src="{{ url('images/'.$user->image) }}" class="img-thumbnail" alt="" width="50">
                                     @endif
                                 </td>
                                 <td>{{ $user->employee_name }}</td>

@@ -28,7 +28,7 @@ class employeController extends Controller
             $validator = Validator::make($request->all(),[
                 'name' => 'required',
                 'email' => ['required', 'email', Rule::unique('employees','employee_email')],
-                'image' => 'nullable|mimes:png,jpg.jpeg,webp',
+                'image' => 'nullable|mimes:png,jpg,jpeg,webp',
                 'department' => 'required',
                 'gender' => 'required',
                 'dob' => 'required|date',
@@ -46,20 +46,22 @@ class employeController extends Controller
                 $employ->designation = $request->designation;
                 $employ->is_active = (int)$request->is_active;
                
-            //    if ($request->hasFile('image')) {
-            //         $file = $request->file('image');
-            //         $ext = $file->getClientOriginalExtension();
-            //         $filename = time() . '.' . $ext;
+               if ($request->hasFile('image')) {
+                    $file = $request->file('image');
+                    $ext = $file->getClientOriginalExtension();
+                    $filename = time() . '.' . $ext;
                     
-            //         // Create the directory if it doesn't exist
-            //         if (!File::exists(public_path('images'))) {
-            //             File::makeDirectory(public_path('images'), 0755, true, true);
-            //         }
+                    // Create the directory if it doesn't exist
+                    if (!File::exists(public_path('images'))) {
+                        File::makeDirectory(public_path('images'), 0755, true, true);
+                    }
                     
-            //         // Move the file using the File facade
-            //         File::move($file->getPathname(), public_path('images') . '/' . $filename);
-            //  }
-            //    $employ->image = $filename;
+                    // Move the file using the File facade
+                    File::move($file->getPathname(), public_path('images') . '/' . $filename);
+             }  else {
+                $filename = "";
+             }
+               $employ->image = $filename;
                 $employ->save();
 
 
@@ -105,7 +107,7 @@ class employeController extends Controller
                 'required','email',
                 Rule::unique('employees','employee_email')->ignore($user->id),
             ],
-            'image' => 'nullable|mimes:png,jpg.jpeg,webp',
+            'image' => 'nullable|mimes:png,jpg,jpeg,webp',
             'department' => 'required',
             'gender' => 'required',
             'dob' => 'required|date',
@@ -121,6 +123,18 @@ class employeController extends Controller
                 $user->designation = $request->designation;
                 $user->is_active = (int)$request->is_active;
 
+                if ($request->hasFile('image')) {
+                    $file = $request->file('image');
+                    $ext = $file->getClientOriginalExtension();
+                    $filename = time().'.'.$ext;
+                    $file->move(public_path('images'), $filename);
+        
+                    if (!empty($user->image)) {
+                        unlink(public_path('images/' . $user->image));
+                    }
+                    $user->image = $filename;
+                }
+        
             $user->save();
             $request->session()->flash('success','employe updated successfully');
             return response()->json([

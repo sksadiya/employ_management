@@ -105,11 +105,14 @@
 		$('#updateForm').submit(function(event) {
     event.preventDefault();
     let element = $(this);
+    let form_data = new FormData(this);
     $('button[type=submit]').prop('disabled',true);
     $.ajax({
          url: "{{route('employe.update',$user->id)}}",
         type:'post',
-        data:element.serializeArray(),
+        data:form_data,
+        contentType: false,
+        processData: false,
         dataType:'json',
         success:function(response) {
             $('button[type=submit]').prop('disabled', false);
