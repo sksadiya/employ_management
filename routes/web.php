@@ -31,3 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/employes/delete/{id}', [employeController::class, 'destroy'])->name('employe.destroy');
    
 });
+
+Route::group(['prefix' => config('menu.prefix')], function () {
+    MenuBuilder::routes();
+});
